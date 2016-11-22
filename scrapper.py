@@ -1,5 +1,6 @@
 from lxml import html
 import time, requests, logging, pickle, os
+from pushover import Client
 
 url = 'https://www.olx.ro/'
 query = '/electronice-si-electrocasnice/jocuri-console/cluj-judet/q-ds/'
@@ -38,11 +39,18 @@ def compare(list1, list2):
 	except Exception as e:
 		logging.error(e)
 
+def notify():
+	try:
+		Client().send_message("Au aparut anunturi noi", title="OLX Updatat")
+	except Exception as e:
+		logging.error(e)
+
 def run():
 	previousList = read()
 	currentList = scrap()
-
-	print compare(previousList, currentList)
+	if compare(previousList, currentList) is not True:
+		notify()
+		
 	write(currentList)
 
 if __name__ == "__main__":
