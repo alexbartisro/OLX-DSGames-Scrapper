@@ -1,23 +1,51 @@
 from lxml import html
-import time, requests, logging
+import time, requests, logging, pickle, os
 
-page = requests.get('https://www.olx.ro/electronice-si-electrocasnice/jocuri-console/cluj-judet/q-ds/')
-thefile = open('test.txt', 'w')
+url = 'https://www.olx.ro/'
+query = '/electronice-si-electrocasnice/jocuri-console/cluj-judet/q-ds/'
+
+page = requests.get(url + query)
 
 def scrap():
 	try:
 		tree = html.fromstring(page.content)
-		post = tree.xpath('//*[@id="offers_table"]/tbody/tr/td/table/tbody/tr/td/a/img')
-		for img in post:
-			print(img.get('alt'), img.get('src'))
-			#thefile.write("%s - %s\n" % img.get('alt'), img.get('src'))
+		post = tree.xpath('//*[@id="offers_table"]/tbody/tr/td/table/tbody/tr/td/div/h3/a')
+		savedList = []
+		for link in post:
+			dictionary = {}
+			dictionary["name"] = link.xpath('strong')[0].text
+			dictionary["url"] = str(link.get('href'))
+			savedList.append(dictionary)
+		return savedList
 	except Exception, e:
-		print('Exception! Will continue execution.')
-		logging.error('\r\nCould not scrap')
-		logging.error('\r\n', e)
+		print('Exception! Will continue execution. \nCould not scrap\n')
+		logging.error(e)
 
+def write(myList):
+	with open('persisted.txt', 'wb') as f:
+		pickle.dump(myList, f)
+
+def read():
+	try:
+		with open('persisted.txt', 'rb') as f:
+			return pickle.load(f)
+	except Exception as e:
+		logging.error(e)
+
+def compare(list1, list2):
+	try:
+		return any(map(lambda v: v in list1, list2))
+	except Exception as e:
+		logging.error(e)
+
+def run():
+	previousList = read()
+	currentList = scrap()
+
+	print compare(previousList, currentList)
+	write(currentList)
 
 if __name__ == "__main__":
 	while 1:
-		scrap()
-		time.sleep(3600)
+		run()
+		time.sleep(10)
