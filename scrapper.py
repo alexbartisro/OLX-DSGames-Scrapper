@@ -56,4 +56,4 @@ def run():
 if __name__ == "__main__":
 	while 1:
 		run()
-		time.sleep(10)
+		time.sleep(3600)
