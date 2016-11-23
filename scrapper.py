@@ -3,7 +3,7 @@ import time, requests, logging, pickle, os
 from pushover import Client
 
 logging.basicConfig(filename='scrapper.log',level=logging.DEBUG, format='%(asctime)s %(message)s')
-url = 'https://www.olx.ro/'
+url = 'https://www.olx.ro'
 query = '/electronice-si-electrocasnice/jocuri-console/cluj-judet/q-ds/'
 
 page = requests.get(url + query)
