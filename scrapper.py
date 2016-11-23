@@ -2,6 +2,7 @@ from lxml import html
 import time, requests, logging, pickle, os
 from pushover import Client
 
+logging.basicConfig(filename='scrapper.log',level=logging.DEBUG, format='%(asctime)s %(message)s')
 url = 'https://www.olx.ro/'
 query = '/electronice-si-electrocasnice/jocuri-console/cluj-judet/q-ds/'
 
@@ -17,6 +18,7 @@ def scrap():
 			dictionary["name"] = link.xpath('strong')[0].text
 			dictionary["url"] = str(link.get('href'))
 			savedList.append(dictionary)
+		logging.info('Page scrapped. List lenght is ' + str(len(savedList)))
 		return savedList
 	except Exception, e:
 		print('Exception! Will continue execution. \nCould not scrap\n')
@@ -25,11 +27,13 @@ def scrap():
 def write(myList):
 	with open('persisted.txt', 'wb') as f:
 		pickle.dump(myList, f)
+	logging.info('List persisted. List lenght is ' + str(len(myList)))
 
 def read():
 	try:
 		with open('persisted.txt', 'rb') as f:
 			return pickle.load(f)
+		logging.info('List loaded. List lenght is ' + str(len(savedList)))
 	except Exception as e:
 		logging.error(e)
 
@@ -49,7 +53,10 @@ def run():
 	previousList = read()
 	currentList = scrap()
 	if compare(previousList, currentList) is not True:
+		logging.info('Lists are different')
 		notify()
+	else:
+		logging.info('Lists are identical')		
 		
 	write(currentList)
 
