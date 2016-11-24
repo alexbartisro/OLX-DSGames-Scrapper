@@ -18,35 +18,39 @@ def scrap():
 			dictionary["name"] = link.xpath('strong')[0].text
 			dictionary["url"] = str(link.get('href'))
 			savedList.append(dictionary)
-		logging.info('Page scrapped. List lenght is ' + str(len(savedList)))
+		logging.info('Page scrapped.')
 		return savedList
 	except Exception, e:
 		print('Exception! Will continue execution. \nCould not scrap\n')
+		print e
 		logging.error(e)
 
 def write(myList):
 	with open('persisted.txt', 'wb') as f:
 		pickle.dump(myList, f)
-	logging.info('List persisted. List lenght is ' + str(len(myList)))
+	logging.info('List persisted.')
 
 def read():
 	try:
 		with open('persisted.txt', 'rb') as f:
 			return pickle.load(f)
-		logging.info('List loaded. List lenght is ' + str(len(savedList)))
+		logging.info('List loaded.')
 	except Exception as e:
+		print e
 		logging.error(e)
 
 def compare(list1, list2):
 	try:
 		return any(map(lambda v: v in list1, list2))
 	except Exception as e:
+		print e
 		logging.error(e)
 
 def notify():
 	try:
 		Client().send_message("Au aparut anunturi noi", title="OLX Updatat")
 	except Exception as e:
+		print e
 		logging.error(e)
 
 def run():
