@@ -1,15 +1,15 @@
 from lxml import html
 import time, requests, logging, pickle, os
 from pushover import Client
+from shutil import copyfile
 
 logging.basicConfig(filename='scrapper.log',level=logging.DEBUG, format='%(asctime)s %(message)s')
 url = 'https://www.olx.ro'
 query = '/electronice-si-electrocasnice/jocuri-console/cluj-judet/q-ds/'
 
-page = requests.get(url + query)
-
 def scrap():
 	try:
+		page = requests.get(url + query)
 		tree = html.fromstring(page.content)
 		post = tree.xpath('//*[@id="offers_table"]/tbody/tr/td/table/tbody/tr/td/div/h3/a')
 		savedList = []
@@ -60,8 +60,7 @@ def run():
 		logging.info('Lists are different')
 		notify()
 	else:
-		logging.info('Lists are identical')		
-		
+		logging.info('Lists are identical')	
 	write(currentList)
 
 if __name__ == "__main__":
