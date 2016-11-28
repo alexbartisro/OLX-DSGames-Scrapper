@@ -42,10 +42,9 @@ def read():
 def compare(previousList, currentList):
 	try:
 		#return any(map(lambda v: v in list1, list2))
-		for dict2 in currentList:
-			for dict1 in previousList:
-				if dict2["url"] != dict1["url"]:
-					notify(dict2["name"], dict2["url"])
+		for dict1 in currentList:
+			if dict1 not in previousList:
+				notify(dict1["name"], dict1["url"])
 	except Exception as e:
 		print e
 		logging.error(e)
@@ -69,4 +68,4 @@ def run():
 if __name__ == "__main__":
 	while 1:
 		run()
-		time.sleep(3600)
+		time.sleep(300)
