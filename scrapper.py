@@ -39,16 +39,20 @@ def read():
 		print e
 		logging.error(e)
 
-def compare(list1, list2):
+def compare(previousList, currentList):
 	try:
-		return any(map(lambda v: v in list1, list2))
+		#return any(map(lambda v: v in list1, list2))
+		for dict2 in currentList:
+			for dict1 in previousList:
+				if dict2["url"] != dict1["url"]:
+					notify(dict2["name"], dict2["url"])
 	except Exception as e:
 		print e
 		logging.error(e)
 
-def notify():
+def notify(title, url):
 	try:
-		Client().send_message("Au aparut anunturi noi", title="OLX Updatat")
+		Client().send_message(url, title=title)
 	except Exception as e:
 		print e
 		logging.error(e)
@@ -58,7 +62,6 @@ def run():
 	currentList = scrap()
 	if compare(previousList, currentList) is not True:
 		logging.info('Lists are different')
-		notify()
 	else:
 		logging.info('Lists are identical')	
 	write(currentList)
