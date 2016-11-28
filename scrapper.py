@@ -5,7 +5,7 @@ from shutil import copyfile
 
 logging.basicConfig(filename='scrapper.log',level=logging.DEBUG, format='%(asctime)s %(message)s')
 url = 'https://www.olx.ro'
-query = '/electronice-si-electrocasnice/jocuri-console/cluj-judet/q-ds/'
+query = '/electronice-si-electrocasnice/jocuri-console/q-ds/'
 
 def scrap():
 	try:
@@ -60,7 +60,7 @@ def notify(title, url):
 def run():
 	previousList = read()
 	currentList = scrap()
-	if compare(previousList, currentList) is not True:
+	if compare(previousList, currentList) is not False:
 		logging.info('Lists are different')
 	else:
 		logging.info('Lists are identical')	
